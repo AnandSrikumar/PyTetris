@@ -1,0 +1,53 @@
+{
+    "font_color": [
+        255,
+        255,
+        255
+    ],
+    "rows": 20,
+    "cols": 10,
+    "score_title": {
+        "x_off": 0.12,
+        "y_off": 0.72
+    },
+    "grid_boundary_color": [
+        72,
+        155,
+        250
+    ],
+    "score": {
+        "x_off": 0.12,
+        "y_off": 0.81
+    },
+    "block_size": 35,
+    "next_shapes_container": {
+        "x_off": 0.70,
+        "y_off": 0.15,
+        "color": [
+            209,
+            199,
+            4
+        ]
+    },
+    "next_shapes": {
+        "x_off": 0.70,
+        "y_off": 0.10
+    },
+    "exit": {
+        "x_off": 0.78,
+        "y_off": 0.80
+    },
+    "box_dims": {
+        "width": 0.07,
+        "height": 0.07
+    },
+    "box_line_width":1,
+    "pause": {
+        "x_off": "",
+        "y_off": ""
+    },
+    "info": {
+        "x_off": "",
+        "y_off": ""
+    }
+}

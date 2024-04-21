@@ -1,0 +1,57 @@
+{
+    "elements": [
+        "Start",
+        "Highscores",
+        "About",
+        "Exit"
+    ],
+    "box_dims": {
+        "width": 0.2,
+        "height": 0.07
+    },
+    "box_line_width":1,
+    "font_color":[255, 255, 255],
+    "title_coords":{"x_off":0.42, "y_off":0.30},
+    "coords": {
+        "Start": {
+            "x_off": 0.40,
+            "y_off": 0.45,
+            "font_size": 32,
+            "icon": false
+        },
+        "Highscores": {
+            "x_off": 0.40,
+            "y_off": 0.55,
+            "font_size": 32,
+            "icon": false
+        },
+        "About": {
+            "x_off": 0.40,
+            "y_off": 0.65,
+            "font_size": 32,
+            "icon": false
+        },
+        "Exit": {
+            "x_off": 0.40,
+            "y_off": 0.75,
+            "font_size": 32,
+            "icon": false
+        },
+        "music_off": {
+            "x_off": 0.80,
+            "y_off": 0.9,
+            "font_size": 32,
+            "icon": true
+        },
+        "sound_off": {
+            "x_off": 0.84,
+            "y_off": 0.9,
+            "font_size": 32,
+            "icon": true
+        }
+    },
+    "extra_elements": [
+        "music_off",
+        "sound_off"
+    ]
+}
