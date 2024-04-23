@@ -104,18 +104,28 @@ def calculate_menu_boxes(menu, container_dims, width, height):
     height = h_container * height
     return x, y, width, height
 
-def calculate_shape_pos(container_coords, block_size):
-    x_min = container_coords[0]
-    x_max = (container_coords[0] + container_coords[2]) - (4*block_size)
-    random_number = random.randint(x_min, x_max)
+def calculate_shape_pos(grid_row, shape):
+    if shape == 'I_SHAPE':
+        rand_num = random.randint(0, len(grid_row)-1)
+    elif (shape == 'S_SHAPE') or (shape == 'Z_SHAPE') or \
+        shape == 'T_SHAPE':
+        rand_num = random.randint(0, len(grid_row)-3)
+    elif (shape == 'L_SHAPE') or (shape == 'J_SHAPE') or \
+        (shape == 'O_SHAPE'):
+        rand_num = random.randint(0, len(grid_row)-2)
+    coords = grid_row[rand_num]['coords']
+    return coords['x'], coords['y'], rand_num
+
+def get_x_y_block_count(current_shape):
+    all_rects = current_shape.all_rects
+    x_count, y_count = [], []
+    for rect in all_rects:
+        x_count.append(rect.x)
+        y_count.append(rect.y)
+    x_count = len(set(x_count))
+    y_count = len(set(y_count))
+    return x_count, y_count
     
-    # Calculate the remainder when dividing by the multiple
-    remainder = random_number % block_size
     
-    # Adjust the random number to be a multiple of the given multiple
-    if remainder != 0:
-        random_number += (block_size - remainder)
-    
-    return random_number
 
 

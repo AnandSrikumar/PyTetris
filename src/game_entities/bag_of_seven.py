@@ -18,21 +18,22 @@ class BagOfSeven:
         self.screen = screen
         self.container_coords = container_coords
 
-    def load_seven(self):
+    def load_seven(self, grid_row):
         for k, v in self.shape_rotations.items():
             if k == "BLACK":
                 continue
             random_color = random.choice(self.constants['RANDOM_COLORS'])
             block_size = self.constants['BLOCK_SIZE']
-            random_pos = calculate_shape_pos(self.container_coords, block_size)
-            blit_coords = [random_pos, self.container_coords[1]-block_size]
+            random_pos = calculate_shape_pos(grid_row, k)
+            blit_coords = [random_pos[0], random_pos[1]]
             shape_obj = Shape(self.constants,
                               self.event_state,
                               self.screen,
                               self.shape_rotations,
                               k,
                               random_color,
-                              blit_coords
+                              blit_coords,
+                              random_pos[2]
                               )
             self.seven.append(shape_obj)
         self.seven  = random.sample(self.seven, len(self.seven))

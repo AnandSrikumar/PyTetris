@@ -2,6 +2,7 @@ import pygame
 from .event_states import *
 from ..services.read_files import read_json
 from ..game_entities.bag_of_seven import BagOfSeven
+from ..game_entities.grid_matrix import GridMatrix
 
 class StateLoader:
     def __init__(self, constants, event_state, screen):

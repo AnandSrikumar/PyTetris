@@ -1,11 +1,11 @@
 import pygame
-from ..calculations.dims import place_items_at_offset_percent
+from ..calculations.dims import place_items_at_offset_percent, get_x_y_block_count
 
 class Shape:
     def __init__(self, constants,
                 event_state,screen,
                 shape, shape_name, block_color,
-                coords
+                coords, curr_grid_col
                 ):
         self.constants = constants
         self.event_state = event_state
@@ -16,6 +16,8 @@ class Shape:
         self.shape_name = shape_name
         self.coords = coords
         self.all_rects = None
+        self.current_grid_row = 0
+        self.current_grid_col = curr_grid_col
 
     def draw_shape(self, shape=None, BLACK=None,
                    BLOCK_SIZE=None, x=None, y=None):
@@ -63,5 +65,55 @@ class Shape:
         self.draw_shape(shape=shape, BLACK=BLACK,
                         BLOCK_SIZE=BLOCK_SIZE,
                         x=x, y=y)
+        
+    def _add_shape_to_existing(self, 
+                               event_state,
+                               elapsed_seconds,
+                               movement_delay,
+                               current_shape):
+        event_state.set_prev_movement(elapsed_seconds-movement_delay)
+        event_state.set_current_shape(-1)
+        event_state.set_existing_shapes(current_shape)
+        
+    def move_shape_down(self, grid_cells):
+      event_state = self.event_state
+      elapsed_seconds = event_state.get_elapsed_seconds()
+      movement_delay = event_state.get_movement_delay()
+      prev_movement = event_state.get_prev_movement()
+      if(elapsed_seconds - prev_movement) >= movement_delay:
+          self.current_grid_row += 1
+          _, y_blocks = get_x_y_block_count(self)
+          if self.current_grid_row + y_blocks <= len(grid_cells):
+            self.coords[1] =\
+                grid_cells[self.current_grid_row]\
+                  [self.current_grid_col]['coords']['y']
+            event_state.set_prev_movement(elapsed_seconds)
+          else:
+              self._add_shape_to_existing(event_state, elapsed_seconds,
+                                          movement_delay, self)
+      if self.coords[1] > 1000:
+          self._add_shape_to_existing(event_state, elapsed_seconds,
+                                          movement_delay, self)
+    
+    def move_shape_horizontal(self, grid_cells):
+        event_state = self.event_state
+        elapsed_seconds = event_state.get_elapsed_seconds()
+        movement_delay = event_state.get_horiz_delay()
+        prev_movement = event_state.get_prev_horiz_movement()
+        if (elapsed_seconds - prev_movement) < movement_delay:
+          return
+        x_blocks, _ = get_x_y_block_count(self)
+        if event_state.get_left_pressed():
+            if self.current_grid_col > 0:
+                self.current_grid_col -= 1
+                self.coords[0] = grid_cells[self.current_grid_row]\
+                                  [self.current_grid_col]['coords']['x']
+
+        elif event_state.get_right_pressed():
+            if (self.current_grid_col + x_blocks) < len(grid_cells[0]):
+                self.current_grid_col += 1
+                self.coords[0] = grid_cells[self.current_grid_row]\
+                                  [self.current_grid_col]['coords']['x']
+        event_state.set_prev_horiz_movement(elapsed_seconds)
         
         
