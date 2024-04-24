@@ -3,8 +3,8 @@ from .screen_loader import Screen
 from ..calculations.dims import *
 from ..services.read_files import read_json
 from ..game_entities.bag_of_seven import BagOfSeven
-from ..calculations.shapes_movements import vertical_movement, horizontal_movement
 from ..game_entities.grid_matrix import GridMatrix
+from ..calculations.shapes_calculations import detect_line_complete
 
 
 class GameScreen(Screen):
@@ -186,6 +186,25 @@ class GameScreen(Screen):
                                  (255,255,255),
                                  (x, y, block_size, block_size),
                                  )
+    def draw_existing_shapes(self, grid):
+        block_size = self.constants['BLOCK_SIZE']
+        BLACK = self.constants['GAME_CONTAINER_COLOR']
+        for row in grid:
+            for col in row:
+                val = col['val']
+                if val == -1:
+                    continue
+                x, y = col['coords']['x'], col['coords']['y']
+                color = col['color']
+                pygame.draw.rect(self.screen,
+                                 color,
+                                 (x, y, block_size, block_size),
+                                 )
+                pygame.draw.rect(self.screen,
+                                 BLACK,
+                                 (x, y, block_size, block_size),
+                                 1
+                                 )
 
     def draw_screen(self):
         font = self.event_state.get_all_fonts()['text_font']
@@ -207,8 +226,9 @@ class GameScreen(Screen):
             self.rectangles = []
         grid_rows = self.event_state.get_grid_matrix()
         self.game_object_blit(grid_rows)
-        self.existing_shapes_blit()
-        # self.debug_draw(grid_rows)
+        # self.existing_shapes_blit()
+        self.draw_existing_shapes(grid_rows)
         self.movements(grid_rows)
         self.next_shapes_blit()
+        detect_line_complete(grid_rows)
         

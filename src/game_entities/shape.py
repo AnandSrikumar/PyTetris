@@ -105,22 +105,40 @@ class Shape:
             locs.append({"row":y_loc, 'col':x_loc})
         return locs
     
-    def _is_block_collided(self, grid_cells):
+    def _is_block_collided_down(self, grid_cells):
         shape_block_locs = self._get_shape_block_idx()
         for loc in shape_block_locs:
             row = loc['row']
             col = loc['col']
             if row + 1 < len(grid_cells):
                 next_row = row+1
-                if grid_cells[next_row][col]['val'] == 1:
+                if col < len(grid_cells[0]) and \
+                  grid_cells[next_row][col]['val'] == 1:
                     return False
         return True
+    
+    def _is_block_collided_horiz(self, grid_cells):
+        shape_block_locs = self._get_shape_block_idx()
+        left_move, right_move = True, True
+        for loc in shape_block_locs:
+            row = loc['row']
+            col = loc['col']
+            prev_col = col - 1
+            next_col = col + 1
+            if prev_col >= 0:
+                if grid_cells[row][prev_col]['val'] == 1:
+                    left_move = False
+            if next_col < len(grid_cells[0]):
+                if grid_cells[row][next_col]['val'] == 1:
+                    right_move = False
+        return left_move, right_move
         
     def _fill_grid_matrix(self, grid_cells):
         locs = self._get_shape_block_idx()
         for loc in locs:
           x_loc, y_loc = loc['col'], loc['row']
           grid_cells[y_loc][x_loc]['val'] = 1
+          grid_cells[y_loc][x_loc]['color'] = self.block_color
             
         self.event_state.set_grid_matrix(grid_cells)
 
@@ -140,7 +158,7 @@ class Shape:
       elapsed_seconds = event_state.get_elapsed_seconds()
       movement_delay = event_state.get_movement_delay()
       prev_movement = event_state.get_prev_movement()
-      is_block = self._is_block_collided(grid_cells)
+      is_block = self._is_block_collided_down(grid_cells)
       if(elapsed_seconds - prev_movement) >= movement_delay:
           self.current_grid_row += 1
           _, y_blocks = get_x_y_block_count(self)
@@ -162,13 +180,14 @@ class Shape:
         if (elapsed_seconds - prev_movement) < movement_delay:
           return
         x_blocks, _ = get_x_y_block_count(self)
-        if event_state.get_left_pressed():
+        left_move, right_move = self._is_block_collided_horiz(grid_cells)
+        if event_state.get_left_pressed() and left_move:
             if self.current_grid_col > 0:
                 self.current_grid_col -= 1
                 self.coords[0] = grid_cells[self.current_grid_row]\
                                   [self.current_grid_col]['coords']['x']
 
-        elif event_state.get_right_pressed():
+        elif event_state.get_right_pressed() and right_move:
             if (self.current_grid_col + x_blocks) < len(grid_cells[0]):
                 self.current_grid_col += 1
                 self.coords[0] = grid_cells[self.current_grid_row]\

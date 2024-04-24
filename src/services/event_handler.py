@@ -1,6 +1,6 @@
 import pygame
 import sys
-from ..calculations.shapes_movements import adjust_speeds
+from ..calculations.shapes_calculations import adjust_speeds
 
 class EventHandle:
     def __init__(self, event_variables, gui_collisions, constants):
