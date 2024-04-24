@@ -22,18 +22,35 @@ class Shape:
     def increment_current_rotation(self):
         self.current_rotation += 1
 
-    def _adjust_rotation(self, shape, x, y, BLOCK_SIZE, BLACK):
+    def _create_block_rects(self, shape,
+                            x, y,
+                            BLOCK_SIZE,
+                            draw=False,
+                            BLACK=None):
         all_rects = []
-        grid_cells = self.event_state.get_grid_matrix()
         for row_index, row in enumerate(shape):
             for col_index, block in enumerate(row):
                 if block == 1:
+                    if draw:
+                        pygame.draw.rect(self.screen, self.block_color, 
+                                     (x + col_index * BLOCK_SIZE,
+                                       y + row_index * BLOCK_SIZE,
+                                         BLOCK_SIZE, BLOCK_SIZE))
+                        pygame.draw.rect(self.screen, BLACK, 
+                                        (x + col_index * BLOCK_SIZE, 
+                                          y + row_index * BLOCK_SIZE,
+                                            BLOCK_SIZE, BLOCK_SIZE), 1)
                     all_rects.append(
                         pygame.Rect(x + col_index * BLOCK_SIZE,
                                     y + row_index * BLOCK_SIZE,
                                     BLOCK_SIZE, BLOCK_SIZE)
                     )
         self.all_rects = all_rects
+
+    def _adjust_rotation(self, shape, x, y, BLOCK_SIZE):
+        self._create_block_rects(shape, x, y, BLOCK_SIZE)
+        grid_cells = self.event_state.get_grid_matrix()
+        
         x_blocks, _ = get_x_y_block_count(self)
         hold_blocks = self.constants['GRID_BLOCKS'][1] - \
                       self.current_grid_col
@@ -52,27 +69,10 @@ class Shape:
           BLACK = self.shape_rotation['BLACK']
           BLOCK_SIZE = self.constants['BLOCK_SIZE']
           x, y = self.coords
-        all_rects = []
 
-        self._adjust_rotation(shape, x, y, BLOCK_SIZE, BLACK)
+        self._adjust_rotation(shape, x, y, BLOCK_SIZE)
 
-        for row_index, row in enumerate(shape):
-            for col_index, block in enumerate(row):
-                if block == 1:
-                    pygame.draw.rect(self.screen, self.block_color, 
-                                     (x + col_index * BLOCK_SIZE,
-                                       y + row_index * BLOCK_SIZE,
-                                         BLOCK_SIZE, BLOCK_SIZE))
-                    pygame.draw.rect(self.screen, BLACK, 
-                                     (x + col_index * BLOCK_SIZE, 
-                                      y + row_index * BLOCK_SIZE,
-                                        BLOCK_SIZE, BLOCK_SIZE), 1)
-                    all_rects.append(
-                        pygame.Rect(x + col_index * BLOCK_SIZE,
-                                    y + row_index * BLOCK_SIZE,
-                                    BLOCK_SIZE, BLOCK_SIZE)
-                    )
-        self.all_rects = all_rects
+        self._create_block_rects(shape, x, y, BLOCK_SIZE, True, BLACK)
     
     def display_shape_in_next(self, y_off):
         shape = self.shape_rotation[self.shape_name][0]
