@@ -18,6 +18,32 @@ class Shape:
         self.all_rects = None
         self.current_grid_row = 0
         self.current_grid_col = curr_grid_col
+      
+    def increment_current_rotation(self):
+        self.current_rotation += 1
+
+    def _adjust_rotation(self, shape, x, y, BLOCK_SIZE, BLACK):
+        all_rects = []
+        grid_cells = self.event_state.get_grid_matrix()
+        for row_index, row in enumerate(shape):
+            for col_index, block in enumerate(row):
+                if block == 1:
+                    all_rects.append(
+                        pygame.Rect(x + col_index * BLOCK_SIZE,
+                                    y + row_index * BLOCK_SIZE,
+                                    BLOCK_SIZE, BLOCK_SIZE)
+                    )
+        self.all_rects = all_rects
+        x_blocks, _ = get_x_y_block_count(self)
+        hold_blocks = self.constants['GRID_BLOCKS'][1] - \
+                      self.current_grid_col
+        if x_blocks > hold_blocks:
+            b_diff = (x_blocks-hold_blocks)
+            self.current_grid_col -= b_diff
+            cell = grid_cells[self.current_grid_row][self.current_grid_col]
+            x_coord = cell['coords']['x']
+            self.coords[0] = x_coord
+        self.all_rects = []
 
     def draw_shape(self, shape=None, BLACK=None,
                    BLOCK_SIZE=None, x=None, y=None):
@@ -27,6 +53,9 @@ class Shape:
           BLOCK_SIZE = self.constants['BLOCK_SIZE']
           x, y = self.coords
         all_rects = []
+
+        self._adjust_rotation(shape, x, y, BLOCK_SIZE, BLACK)
+
         for row_index, row in enumerate(shape):
             for col_index, block in enumerate(row):
                 if block == 1:
@@ -66,11 +95,30 @@ class Shape:
                         BLOCK_SIZE=BLOCK_SIZE,
                         x=x, y=y)
         
+    def _fill_grid_matrix(self, grid_cells):
+        row = self.current_grid_row
+        col = self.current_grid_col
+        if self.current_grid_row > len(grid_cells):
+            row = len(grid_cells)
+        cell = grid_cells[row][col]
+        curr_x = cell['coords']['x']
+        curr_y = cell['coords']['y']
+        block_size = self.constants['BLOCK_SIZE']
+        for rect in self.all_rects:
+            col_diff = (abs(curr_x - rect.x))%block_size
+            row_diff = (abs(curr_y - rect.y))%block_size
+            row_idx = self.current_grid_row + row_diff
+            col_idx = self.current_grid_col + col_diff
+            grid_cells[row_idx][col_idx]['val'] = 1
+        self.event_state.set_grid_matrix(grid_cells)
+
     def _add_shape_to_existing(self, 
                                event_state,
                                elapsed_seconds,
                                movement_delay,
-                               current_shape):
+                               current_shape,
+                               grid_cells):
+        # self._fill_grid_matrix(grid_cells)
         event_state.set_prev_movement(elapsed_seconds-movement_delay)
         event_state.set_current_shape(-1)
         event_state.set_existing_shapes(current_shape)
@@ -90,10 +138,10 @@ class Shape:
             event_state.set_prev_movement(elapsed_seconds)
           else:
               self._add_shape_to_existing(event_state, elapsed_seconds,
-                                          movement_delay, self)
+                                          movement_delay, self, grid_cells)
       if self.coords[1] > 1000:
           self._add_shape_to_existing(event_state, elapsed_seconds,
-                                          movement_delay, self)
+                                          movement_delay, self, grid_cells)
     
     def move_shape_horizontal(self, grid_cells):
         event_state = self.event_state

@@ -32,7 +32,7 @@ class EventHandle:
 
         elif(event.key == pygame.K_UP):
             curr_shape = self.event_variables.get_current_shape()
-            curr_shape.current_rotation += 1
+            curr_shape.increment_current_rotation()
         
     def keyup_handler(self, event):
         if (event.key == pygame.K_DOWN):

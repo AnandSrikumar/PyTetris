@@ -174,6 +174,19 @@ class GameScreen(Screen):
         current_shape.move_shape_down(grid_rows)
         current_shape.move_shape_horizontal(grid_rows)
 
+    def debug_draw(self, grid):
+        block_size = self.constants['BLOCK_SIZE']
+        for row in grid:
+            for col in row:
+                val = col['val']
+                if val == -1:
+                    continue
+                x, y = col['coords']['x'], col['coords']['y']
+                pygame.draw.rect(self.screen,
+                                 (255,255,255),
+                                 (x, y, block_size, block_size),
+                                 )
+
     def draw_screen(self):
         font = self.event_state.get_all_fonts()['text_font']
         color = self.game['font_color']
@@ -195,6 +208,7 @@ class GameScreen(Screen):
         grid_rows = self.event_state.get_grid_matrix()
         self.game_object_blit(grid_rows)
         self.existing_shapes_blit()
+        # self.debug_draw(grid_rows)
         self.movements(grid_rows)
         self.next_shapes_blit()
         self.invisible_boundary_blit()
