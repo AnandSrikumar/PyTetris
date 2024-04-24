@@ -211,7 +211,4 @@ class GameScreen(Screen):
         # self.debug_draw(grid_rows)
         self.movements(grid_rows)
         self.next_shapes_blit()
-        self.invisible_boundary_blit()
-        
-        # self.game_collisions.check_boundary()
         
