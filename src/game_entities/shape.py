@@ -21,6 +21,22 @@ class Shape:
         self.current_grid_col = curr_grid_col
       
     def increment_current_rotation(self):
+        new_rot = self.current_rotation + 1
+        shape = self.shape_rotation[self.shape_name][new_rot%4]
+        BLOCK_SIZE = self.constants['BLOCK_SIZE']
+        x, y = self.coords
+        self._create_block_rects(shape, x, y, BLOCK_SIZE)
+        locs = self._get_shape_block_idx()
+        grid_cells = self.event_state.get_grid_matrix()
+        for loc in locs:
+            row = loc['row']
+            col = loc['col']
+            if (row < len(grid_cells)) and \
+                (col < len(grid_cells[0])) and \
+                    (grid_cells[row][col]['val'] == 1):
+                return
+            if row >= len(grid_cells):
+                return
         self.current_rotation += 1
 
     def _create_block_rects(self, shape,
@@ -61,6 +77,7 @@ class Shape:
             cell = grid_cells[self.current_grid_row][self.current_grid_col]
             x_coord = cell['coords']['x']
             self.coords[0] = x_coord
+        
         self.all_rects = []
 
     def draw_shape(self, shape=None, BLACK=None,
