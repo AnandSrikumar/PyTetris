@@ -34,6 +34,13 @@ class EventVariables:
         self._bottom_move = True
         self._grid_matrix = []
         self._existing_shapes = []
+        self._game_over = False
+
+    def get_game_over(self):
+        return self._game_over
+    
+    def set_game_over(self, gameover):
+        self._game_over = gameover
 
     def set_existing_shapes(self, shape):
         self._existing_shapes.append(shape)
