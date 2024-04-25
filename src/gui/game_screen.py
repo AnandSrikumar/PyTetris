@@ -4,7 +4,7 @@ from ..calculations.dims import *
 from ..services.read_files import read_json
 from ..game_entities.bag_of_seven import BagOfSeven
 from ..game_entities.grid_matrix import GridMatrix
-from ..calculations.shapes_calculations import detect_line_complete
+from ..calculations.shapes_calculations import detect_line_complete, detect_game_over
 
 
 class GameScreen(Screen):
@@ -205,17 +205,8 @@ class GameScreen(Screen):
                                  (x, y, block_size, block_size),
                                  1
                                  )
-
-    def draw_screen(self):
-        font = self.event_state.get_all_fonts()['text_font']
-        color = self.game['font_color']
-        grid_boundary_color = self.game['grid_boundary_color']
-        block_size = self.game['block_size']
-        
-        self.scores_blit(font, color)
-        self.grid_blit(grid_boundary_color, block_size)
-        self.shape_blit(color, block_size, font)
-        self.grid_exit_blit(color, font)
+                
+    def preloader(self):
         existing_rects = self.event_state.get_menu_rectangles().get(4)
         if not self.rectangle_menu_set or existing_rects is None:
             self.event_state.set_menu_rectangles(self.rectangles,
@@ -224,11 +215,23 @@ class GameScreen(Screen):
             gmatrix.load_grid()
             self.rectangle_menu_set = True
             self.rectangles = []
+
+    def draw_screen(self):
+        font = self.event_state.get_all_fonts()['text_font']
+        color = self.game['font_color']
+        grid_boundary_color = self.game['grid_boundary_color']
+        block_size = self.game['block_size']
+        self.scores_blit(font, color)
+        self.grid_blit(grid_boundary_color, block_size)
+        self.shape_blit(color, block_size, font)
+        self.grid_exit_blit(color, font)
+        self.preloader()
         grid_rows = self.event_state.get_grid_matrix()
         self.game_object_blit(grid_rows)
         # self.existing_shapes_blit()
         self.draw_existing_shapes(grid_rows)
         self.movements(grid_rows)
         self.next_shapes_blit()
-        detect_line_complete(grid_rows)
+        self.event_state.set_game_over(detect_game_over(grid_rows))
+        detect_line_complete(grid_rows, self.event_state, self.constants)
         

@@ -1,5 +1,6 @@
 import pygame
 from ..calculations.dims import place_items_at_offset_percent, get_x_y_block_count
+from ..calculations.shapes_calculations import score_calculator
 
 class Shape:
     def __init__(self, constants,
@@ -152,6 +153,7 @@ class Shape:
         event_state.set_prev_movement(elapsed_seconds-movement_delay)
         event_state.set_current_shape(-1)
         event_state.set_existing_shapes(current_shape)
+        score_calculator(self.event_state, self.constants)
         
     def move_shape_down(self, grid_cells):
       event_state = self.event_state

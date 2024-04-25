@@ -28,7 +28,8 @@ class EventHandle:
             self.event_variables.set_running(False)
 
         elif (event.key == pygame.K_DOWN):
-            self.event_variables.set_movement_delay(60)
+            delay = adjust_speeds(self.event_variables, self.constants)
+            self.event_variables.set_movement_delay(delay//6)
 
         elif(event.key == pygame.K_UP):
             curr_shape = self.event_variables.get_current_shape()
