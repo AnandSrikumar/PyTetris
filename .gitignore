@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 src/__pycache__/
+src/gui/__pycache__/
+src/services/__pycache__/
+src/game_entities/__pycache__/
+src/calculations/__pycache__/
 # C extensions
 *.so
 

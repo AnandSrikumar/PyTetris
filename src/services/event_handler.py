@@ -1,6 +1,6 @@
 import pygame
 import sys
-from ..calculations.shapes_movements import horizontal_movement, adjust_speeds
+from ..calculations.shapes_calculations import adjust_speeds
 
 class EventHandle:
     def __init__(self, event_variables, gui_collisions, constants):
@@ -28,12 +28,11 @@ class EventHandle:
             self.event_variables.set_running(False)
 
         elif (event.key == pygame.K_DOWN):
-            curr_movement_delay = self.event_variables.get_movement_delay()
             self.event_variables.set_movement_delay(60)
 
         elif(event.key == pygame.K_UP):
             curr_shape = self.event_variables.get_current_shape()
-            curr_shape.current_rotation += 1
+            curr_shape.increment_current_rotation()
         
     def keyup_handler(self, event):
         if (event.key == pygame.K_DOWN):

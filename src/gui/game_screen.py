@@ -3,7 +3,8 @@ from .screen_loader import Screen
 from ..calculations.dims import *
 from ..services.read_files import read_json
 from ..game_entities.bag_of_seven import BagOfSeven
-from ..calculations.shapes_movements import vertical_movement, horizontal_movement
+from ..game_entities.grid_matrix import GridMatrix
+from ..calculations.shapes_calculations import detect_line_complete
 
 
 class GameScreen(Screen):
@@ -116,18 +117,19 @@ class GameScreen(Screen):
         text_surface = font.render('NEXT', True, color)
         self.screen.blit(text_surface, (x_t, y_t))
 
-    def game_object_blit(self):
+    def game_object_blit(self, grid_rows):
         curr_shape = self.event_state.get_current_shape()
         b7 = self.event_state.get_bag_of_7()
+        
         if curr_shape is None:
             b7 = self.load_shape_objects()
-            b7.load_seven()
+            b7.load_seven(grid_rows[0])
             b7.append_queue()
             shape = b7.get_queue_element()
             self.event_state.set_current_shape(shape)
         
         if len(b7.seven) == 0:
-            b7.load_seven()
+            b7.load_seven(grid_rows[0])
         
         if curr_shape == -1:
             shape = b7.get_queue_element()
@@ -159,13 +161,57 @@ class GameScreen(Screen):
                           "bottom":bottom_boundary,
                           }
         self.event_state.set_boundary_rect(boundary_rects)
-        
+    
+    def existing_shapes_blit(self):
+        existing_shapes = self.event_state.get_existing_shapes()
+        for shape in existing_shapes:
+            shape.draw_shape()
+    
+    def movements(self, grid_rows):
+        current_shape = self.event_state.get_current_shape()
+        if current_shape == -1:
+            return
+        current_shape.move_shape_down(grid_rows)
+        current_shape.move_shape_horizontal(grid_rows)
+
+    def debug_draw(self, grid):
+        block_size = self.constants['BLOCK_SIZE']
+        for row in grid:
+            for col in row:
+                val = col['val']
+                if val == -1:
+                    continue
+                x, y = col['coords']['x'], col['coords']['y']
+                pygame.draw.rect(self.screen,
+                                 (255,255,255),
+                                 (x, y, block_size, block_size),
+                                 )
+    def draw_existing_shapes(self, grid):
+        block_size = self.constants['BLOCK_SIZE']
+        BLACK = self.constants['GAME_CONTAINER_COLOR']
+        for row in grid:
+            for col in row:
+                val = col['val']
+                if val == -1:
+                    continue
+                x, y = col['coords']['x'], col['coords']['y']
+                color = col['color']
+                pygame.draw.rect(self.screen,
+                                 color,
+                                 (x, y, block_size, block_size),
+                                 )
+                pygame.draw.rect(self.screen,
+                                 BLACK,
+                                 (x, y, block_size, block_size),
+                                 1
+                                 )
 
     def draw_screen(self):
         font = self.event_state.get_all_fonts()['text_font']
         color = self.game['font_color']
         grid_boundary_color = self.game['grid_boundary_color']
         block_size = self.game['block_size']
+        
         self.scores_blit(font, color)
         self.grid_blit(grid_boundary_color, block_size)
         self.shape_blit(color, block_size, font)
@@ -174,13 +220,15 @@ class GameScreen(Screen):
         if not self.rectangle_menu_set or existing_rects is None:
             self.event_state.set_menu_rectangles(self.rectangles,
                                         self.event_state.get_event_state())
+            gmatrix = GridMatrix(self.constants, self.event_state)
+            gmatrix.load_grid()
             self.rectangle_menu_set = True
             self.rectangles = []
-        
-        self.game_object_blit()
-        vertical_movement(self.event_state)
-        horizontal_movement(self.event_state, self.constants['BLOCK_SIZE'])
+        grid_rows = self.event_state.get_grid_matrix()
+        self.game_object_blit(grid_rows)
+        # self.existing_shapes_blit()
+        self.draw_existing_shapes(grid_rows)
+        self.movements(grid_rows)
         self.next_shapes_blit()
-        self.invisible_boundary_blit()
-        self.game_collisions.check_boundary()
+        detect_line_complete(grid_rows)
         

@@ -4,6 +4,7 @@ constants['SCREEN_HEIGHT'] = 1080
 constants['FULL_SCREEN'] = True
 constants['BACKGROUND_COLOR'] = (245, 240, 240)
 constants['GAME_CONTAINER_COLOR'] = (0, 0, 0)
+constants['GRAY'] = (191, 191, 191)
 constants['BLOCK_SIZE'] = 35
 constants['GRID_BLOCKS'] = (20, 10)
 constants['GRID_ORIGIN'] = (50, 70)

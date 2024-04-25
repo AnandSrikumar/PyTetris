@@ -32,6 +32,20 @@ class EventVariables:
         self._left_move = True
         self._right_move = True
         self._bottom_move = True
+        self._grid_matrix = []
+        self._existing_shapes = []
+
+    def set_existing_shapes(self, shape):
+        self._existing_shapes.append(shape)
+
+    def get_existing_shapes(self):
+        return self._existing_shapes
+
+    def set_grid_matrix(self, matrix):
+        self._grid_matrix = matrix
+
+    def get_grid_matrix(self):
+        return self._grid_matrix
 
     def set_left_move(self, value):
         self._left_move = value
