@@ -118,6 +118,9 @@ class GameScreen(Screen):
         self.screen.blit(text_surface, (x_t, y_t))
 
     def game_object_blit(self, grid_rows):
+        game_over = self.event_state.get_game_over()
+        if game_over:
+            return
         curr_shape = self.event_state.get_current_shape()
         b7 = self.event_state.get_bag_of_7()
         
@@ -144,23 +147,6 @@ class GameScreen(Screen):
         for q in queue_3:
             q.display_shape_in_next(y_off)
             y_off += 0.3
-
-    def invisible_boundary_blit(self):
-        grid_coords = self.event_state.get_game_grid_coords()
-        if grid_coords is None:
-            return
-        x, y, width, height = grid_coords
-        left_boundary = pygame.Rect(x+self.constants['BLOCK_SIZE'],
-                                    y, 1, height)
-        right_boundary = pygame.Rect(x+width, y, 1, height)
-        bottom_boundary = pygame.Rect(x,
-                                    (y+height) - (self.constants['BLOCK_SIZE']),
-                                    width, 1)
-        boundary_rects = {"left":left_boundary,
-                          "right":right_boundary,
-                          "bottom":bottom_boundary,
-                          }
-        self.event_state.set_boundary_rect(boundary_rects)
     
     def existing_shapes_blit(self):
         existing_shapes = self.event_state.get_existing_shapes()
@@ -174,18 +160,6 @@ class GameScreen(Screen):
         current_shape.move_shape_down(grid_rows)
         current_shape.move_shape_horizontal(grid_rows)
 
-    def debug_draw(self, grid):
-        block_size = self.constants['BLOCK_SIZE']
-        for row in grid:
-            for col in row:
-                val = col['val']
-                if val == -1:
-                    continue
-                x, y = col['coords']['x'], col['coords']['y']
-                pygame.draw.rect(self.screen,
-                                 (255,255,255),
-                                 (x, y, block_size, block_size),
-                                 )
     def draw_existing_shapes(self, grid):
         block_size = self.constants['BLOCK_SIZE']
         BLACK = self.constants['GAME_CONTAINER_COLOR']
@@ -234,4 +208,5 @@ class GameScreen(Screen):
         self.next_shapes_blit()
         self.event_state.set_game_over(detect_game_over(grid_rows))
         detect_line_complete(grid_rows, self.event_state, self.constants)
+        self.event_state.set_game_over(detect_game_over(grid_rows))
         
