@@ -35,6 +35,13 @@ class EventVariables:
         self._grid_matrix = []
         self._existing_shapes = []
         self._game_over = False
+        self._pause = False
+    
+    def set_pause(self, p):
+        self._pause = p
+    
+    def get_pause(self):
+        return self._pause
 
     def get_game_over(self):
         return self._game_over
