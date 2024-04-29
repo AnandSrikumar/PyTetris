@@ -1,5 +1,6 @@
 from .main_menu import MainMenu
 from .game_screen import GameScreen
+from .game_over import GameOver
 from ..services import read_files
 from ..calculations.game_collisions import GameCollisions
 
@@ -25,6 +26,9 @@ class LoadScreenState:
                                                 self.constants)
                     state_obj = GameScreen(self.constants, self.title, entity_dict,
                                         self.event_state, self.screen, collisions)
+                elif v == "game_over":
+                    state_obj = GameOver(self.event_state, self.constants,
+                                         self.screen, entity_dict)
                 event_objects[v] = state_obj
             except Exception as e:
                 print(str(e))

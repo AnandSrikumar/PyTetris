@@ -2,7 +2,7 @@ class EventVariables:
     def __init__(self):
         self._running = True
         self._container_coords = {}
-        self._event_state = 0
+        self._event_state = 3
         self._states = {0:"main_menu",
                        1:"highscore",
                        2:"pause_menu",

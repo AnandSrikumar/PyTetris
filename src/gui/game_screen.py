@@ -120,7 +120,7 @@ class GameScreen(Screen):
     def game_over_state_change(self):
         game_over = self.event_state.get_game_over()
         if game_over:
-            self.event_state.set_state(3)
+            self.event_state.set_event_state(3)
 
     def pause_text_blit(self, font, color):
         x, y, width, height = self.event_state.get_game_grid_coords()
@@ -214,7 +214,8 @@ class GameScreen(Screen):
         self.preloader()
         grid_rows = self.event_state.get_grid_matrix()
         self.game_object_blit(grid_rows, font, color)
-        # self.existing_shapes_blit()
+        if self.event_state.get_game_over():
+            return
         self.draw_existing_shapes(grid_rows)
         self.movements(grid_rows)
         self.next_shapes_blit()
