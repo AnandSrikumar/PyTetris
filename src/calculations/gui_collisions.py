@@ -4,7 +4,8 @@ class GuiCollisions:
         self.constants = constants
         self.event_state = event_state
         self.func_mapper = {0:self.main_menu_collisions,
-                            4:self.game_screen_collisions}
+                            4:self.game_screen_collisions,
+                            3:self.game_over_collisions}
 
     def main_menu_collisions(self, name):
         if name.lower() == "start":
@@ -23,6 +24,15 @@ class GuiCollisions:
         
     def game_screen_collisions(self, name):
         if name.lower() == "exit":
+            self.event_state.set_event_state(0)
+    
+    def game_over_collisions(self, name):
+        self.event_state.set_game_over(False)
+        self.event_state.set_score(0)
+        self.event_state.set_current_shape(None)
+        if name.lower() == 'play_again':
+            self.event_state.set_event_state(4)
+        elif name.lower() == 'exit':
             self.event_state.set_event_state(0)
 
     def mouse_down_collisions(self):

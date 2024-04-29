@@ -2,7 +2,7 @@ class EventVariables:
     def __init__(self):
         self._running = True
         self._container_coords = {}
-        self._event_state = 0
+        self._event_state = 3
         self._states = {0:"main_menu",
                        1:"highscore",
                        2:"pause_menu",
@@ -35,6 +35,13 @@ class EventVariables:
         self._grid_matrix = []
         self._existing_shapes = []
         self._game_over = False
+        self._pause = False
+    
+    def set_pause(self, p):
+        self._pause = p
+    
+    def get_pause(self):
+        return self._pause
 
     def get_game_over(self):
         return self._game_over

@@ -117,13 +117,25 @@ class GameScreen(Screen):
         text_surface = font.render('NEXT', True, color)
         self.screen.blit(text_surface, (x_t, y_t))
 
-    def game_object_blit(self, grid_rows):
+    def game_over_state_change(self):
         game_over = self.event_state.get_game_over()
         if game_over:
+            self.event_state.set_event_state(3)
+
+    def pause_text_blit(self, font, color):
+        x, y, width, height = self.event_state.get_game_grid_coords()
+        px, py = place_items_at_offset_percent(x, y, width, height, 0.25, 0.4)
+        text_surface = font.render('PAUSED', True, color)
+        self.screen.blit(text_surface, (px, py))
+
+
+    def game_object_blit(self, grid_rows, font, color):
+        if self.event_state.get_pause():
+            self.pause_text_blit(font, color)
             return
+        self.game_over_state_change()
         curr_shape = self.event_state.get_current_shape()
         b7 = self.event_state.get_bag_of_7()
-        
         if curr_shape is None:
             b7 = self.load_shape_objects()
             b7.load_seven(grid_rows[0])
@@ -201,8 +213,9 @@ class GameScreen(Screen):
         self.grid_exit_blit(color, font)
         self.preloader()
         grid_rows = self.event_state.get_grid_matrix()
-        self.game_object_blit(grid_rows)
-        # self.existing_shapes_blit()
+        self.game_object_blit(grid_rows, font, color)
+        if self.event_state.get_game_over():
+            return
         self.draw_existing_shapes(grid_rows)
         self.movements(grid_rows)
         self.next_shapes_blit()

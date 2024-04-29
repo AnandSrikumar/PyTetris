@@ -19,6 +19,7 @@ constants['RANDOM_COLORS'] = [(92, 206, 255),
                               (212, 38, 87)]
 constants['main_menu'] = "assets/screens/main_menu.json"
 constants['game'] = "assets/screens/game_screen.json"
+constants['game_over'] = "assets/screens/game_over.json"
 constants['menu_title_font'] = {"size": 32, "color": (
     255, 255, 255), 'path': "assets/fonts/menu_items.ttf"}
 constants['text_font'] = {"size": 32, "color": (

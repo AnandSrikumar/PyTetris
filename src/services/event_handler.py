@@ -35,6 +35,10 @@ class EventHandle:
             curr_shape = self.event_variables.get_current_shape()
             curr_shape.increment_current_rotation()
         
+        elif(event.key == pygame.K_SPACE):
+            curr_pause = self.event_variables.get_pause()
+            self.event_variables.set_pause(not curr_pause)
+        
     def keyup_handler(self, event):
         if (event.key == pygame.K_DOWN):
             delay = adjust_speeds(self.event_variables, self.constants)
