@@ -41,6 +41,7 @@ def detect_line_complete(grid_cells, event_state, constants):
             line_rows_idx.append(idx)
     lines_rem(grid_cells, line_rows_idx)
     score_calculator(event_state, constants, 'lines', line_completes)
+    return line_completes
 
 def detect_game_over(grid_cells):
     start = 0

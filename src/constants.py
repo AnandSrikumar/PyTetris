@@ -29,9 +29,7 @@ constants['movement_delay'] = {1: 400,
                                2: 250,
                                3: 150,
                                4: 100}
-constants['level_change_score'] = {1: 12000,
-                                   2: 35000,
-                                   3: 55000}
+constants['level_change_lines'] = 10 
 
 constants['scores_awarded'] = {1: {"lines": {1: "60",
                                              2: "120",
