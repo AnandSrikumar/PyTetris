@@ -7,7 +7,6 @@ from .gui.screen_loader import Title
 from .gui.gui_objects_creator import LoadScreenState
 from .services.states_loader import StateLoader
 from .calculations.gui_collisions import GuiCollisions
-from .calculations.game_collisions import GameCollisions
 import sys
 
 class GameRunner:
@@ -21,7 +20,6 @@ class GameRunner:
         self.gui_collisions = GuiCollisions(constants, self.event_variable)
         self.event_handle = event_handler.EventHandle(self.event_variable,
                                                     self.gui_collisions, constants)
-        self.game_collisions = GameCollisions(self.event_variable, constants)
 
     def pygame_initializer(self):
         pygame.init()

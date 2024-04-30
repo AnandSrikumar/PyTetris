@@ -2,7 +2,6 @@ from .main_menu import MainMenu
 from .game_screen import GameScreen
 from .game_over import GameOver
 from ..services import read_files
-from ..calculations.game_collisions import GameCollisions
 
 class LoadScreenState:
     def __init__(self, constants, title, event_state, screen):
@@ -22,10 +21,8 @@ class LoadScreenState:
                     state_obj = MainMenu(self.constants, self.title, entity_dict,
                                         self.event_state, self.screen)
                 elif v == "game":
-                    collisions = GameCollisions(self.event_state,
-                                                self.constants)
                     state_obj = GameScreen(self.constants, self.title, entity_dict,
-                                        self.event_state, self.screen, collisions)
+                                        self.event_state, self.screen)
                 elif v == "game_over":
                     state_obj = GameOver(self.event_state, self.constants,
                                          self.screen, entity_dict)

@@ -9,7 +9,7 @@ from ..calculations.shapes_calculations import detect_line_complete, detect_game
 
 class GameScreen(Screen):
     def __init__(self, constants, title, game, event_state, screen,
-                 game_collisions=None):
+                 ):
         self.constants = constants
         self.title = title
         self.game = game
@@ -18,7 +18,6 @@ class GameScreen(Screen):
         self.coords = self.event_state.get_container_coords()
         self.rectangles = []
         self.rectangle_menu_set = False
-        self.game_collisions = game_collisions
 
     def load_shape_objects(self):
         shapes_file = self.constants['shapes']
