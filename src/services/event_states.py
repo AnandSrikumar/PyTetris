@@ -2,7 +2,7 @@ class EventVariables:
     def __init__(self):
         self._running = True
         self._container_coords = {}
-        self._event_state = 3
+        self._event_state = 0
         self._states = {0:"main_menu",
                        1:"highscore",
                        2:"pause_menu",
@@ -36,6 +36,13 @@ class EventVariables:
         self._existing_shapes = []
         self._game_over = False
         self._pause = False
+        self._line_completes = 0
+
+    def set_line_complete(self, lc):
+        self._line_completes += lc
+    
+    def get_line_complete(self):
+        return self._line_completes
     
     def set_pause(self, p):
         self._pause = p

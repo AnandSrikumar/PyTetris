@@ -21,15 +21,22 @@ class GuiCollisions:
             pass
         if name.lower() == "exit":
             self.event_state.set_running(False)
-        
-    def game_screen_collisions(self, name):
-        if name.lower() == "exit":
-            self.event_state.set_event_state(0)
     
-    def game_over_collisions(self, name):
+    def level_score_reset(self):
         self.event_state.set_game_over(False)
         self.event_state.set_score(0)
         self.event_state.set_current_shape(None)
+        self.event_state.set_level(1)
+        movement_delay = self.constants['movement_delay'][1]
+        self.event_state.set_movement_delay(movement_delay)
+        
+    def game_screen_collisions(self, name):
+        if name.lower() == "exit":
+            self.level_score_reset()
+            self.event_state.set_event_state(0)
+    
+    def game_over_collisions(self, name):
+        self.level_score_reset()
         if name.lower() == 'play_again':
             self.event_state.set_event_state(4)
         elif name.lower() == 'exit':

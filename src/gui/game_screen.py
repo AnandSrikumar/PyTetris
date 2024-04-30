@@ -202,6 +202,16 @@ class GameScreen(Screen):
             self.rectangle_menu_set = True
             self.rectangles = []
 
+    def level_change_check(self):
+        lines = self.event_state.get_line_complete()
+        curr_level = self.event_state.get_level()
+        if lines%10 == 0 and lines > 0:
+            if curr_level < 4:
+                curr_level += 1
+                self.event_state.set_level(curr_level)
+                movement_delay = self.constants['movement_delay'][curr_level]
+                self.event_state.set_movement_delay(movement_delay)
+
     def draw_screen(self):
         font = self.event_state.get_all_fonts()['text_font']
         color = self.game['font_color']
@@ -220,6 +230,8 @@ class GameScreen(Screen):
         self.movements(grid_rows)
         self.next_shapes_blit()
         self.event_state.set_game_over(detect_game_over(grid_rows))
-        detect_line_complete(grid_rows, self.event_state, self.constants)
+        lc = detect_line_complete(grid_rows, self.event_state, self.constants)
+        self.event_state.set_line_complete(lc)
         self.event_state.set_game_over(detect_game_over(grid_rows))
+        self.level_change_check()
         
